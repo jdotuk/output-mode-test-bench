@@ -11,6 +11,14 @@ export default function App() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem('auth') === 'true')
   const [level, setLevel] = useState('beginner')
   const [prompts, setPrompts] = useState({ ...defaultPrompts })
+  const [savedPrompts, setSavedPrompts] = useState(() => {
+    try {
+      const stored = localStorage.getItem('savedPrompts')
+      return stored ? JSON.parse(stored) : { ...defaultPrompts }
+    } catch {
+      return { ...defaultPrompts }
+    }
+  })
   const [activeImage, setActiveImage] = useState({
     url: '/images/beginner_1.png',
     base64: null,
@@ -43,6 +51,16 @@ export default function App() {
 
   const handleUpdatePrompt = (text) => {
     setPrompts((prev) => ({ ...prev, [level]: text }))
+  }
+
+  const handleSavePrompt = () => {
+    const updated = { ...savedPrompts, [level]: prompts[level] }
+    setSavedPrompts(updated)
+    localStorage.setItem('savedPrompts', JSON.stringify(updated))
+  }
+
+  const handleRevertPrompt = () => {
+    setPrompts((prev) => ({ ...prev, [level]: savedPrompts[level] }))
   }
 
   const handleScore = async (userInput) => {
@@ -110,7 +128,13 @@ export default function App() {
         </div>
         {/* Column 2 — Prompt */}
         <div className="w-1/3 flex flex-col border-r border-slate-800 overflow-y-auto">
-          <PromptEditor prompt={prompts[level]} onChange={handleUpdatePrompt} />
+          <PromptEditor
+            prompt={prompts[level]}
+            savedPrompt={savedPrompts[level]}
+            onChange={handleUpdatePrompt}
+            onSave={handleSavePrompt}
+            onRevert={handleRevertPrompt}
+          />
         </div>
         {/* Column 3 — Chat */}
         <div className="w-1/3 flex flex-col overflow-hidden">
