@@ -69,7 +69,7 @@ export default function App() {
     const id = Date.now()
     setChat((prev) => [
       ...prev,
-      { id, userInput, score: null, correctedVersion: null, loading: true, error: null },
+      { id, userInput, score: null, correctedVersion: null, originalAnalysis: null, loading: true, error: null },
     ])
     try {
       let { base64, mimeType } = activeImage
@@ -78,7 +78,7 @@ export default function App() {
         base64 = result.base64
         mimeType = result.mimeType
       }
-      const { score, corrected_version } = await scoreDescription(
+      const { score, corrected_version, original_analysis } = await scoreDescription(
         base64,
         mimeType,
         prompts[level],
@@ -87,7 +87,7 @@ export default function App() {
       setChat((prev) =>
         prev.map((item) =>
           item.id === id
-            ? { ...item, score, correctedVersion: corrected_version, loading: false }
+            ? { ...item, score, correctedVersion: corrected_version, originalAnalysis: original_analysis ?? null, loading: false }
             : item
         )
       )

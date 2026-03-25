@@ -55,8 +55,20 @@ function ChatItem({ item }) {
         ) : (
           <div className="bg-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 flex flex-col gap-2 max-w-sm">
             <ScoreBadge score={item.score} />
+            {item.originalAnalysis ? (
+              <div className="flex flex-wrap gap-x-1 gap-y-0.5">
+                {item.originalAnalysis.map((w, i) => (
+                  <span
+                    key={i}
+                    className={`text-sm font-medium ${w.is_correct ? 'text-emerald-400' : 'text-rose-400 underline decoration-dotted underline-offset-2'}`}
+                  >
+                    {w.word}
+                  </span>
+                ))}
+              </div>
+            ) : null}
             {item.correctedVersion && (
-              <p className="text-slate-300 text-sm italic">
+              <p className="text-slate-400 text-sm italic">
                 &ldquo;{item.correctedVersion}&rdquo;
               </p>
             )}
