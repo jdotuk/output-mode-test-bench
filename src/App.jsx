@@ -10,8 +10,15 @@ import LoginPage from './components/LoginPage'
 export default function App() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem('auth') === 'true')
   const [level, setLevel] = useState('beginner')
-  const [prompts, setPrompts] = useState({ ...defaultPrompts })
   const [savedPrompts, setSavedPrompts] = useState(() => {
+    try {
+      const stored = localStorage.getItem('savedPrompts')
+      return stored ? JSON.parse(stored) : { ...defaultPrompts }
+    } catch {
+      return { ...defaultPrompts }
+    }
+  })
+  const [prompts, setPrompts] = useState(() => {
     try {
       const stored = localStorage.getItem('savedPrompts')
       return stored ? JSON.parse(stored) : { ...defaultPrompts }
